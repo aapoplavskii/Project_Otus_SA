@@ -1,0 +1,30 @@
+@startuml Domaine modele
+left to right direction
+skinparam DefaultTextAlignment center
+
+    actor Поставщик as provider
+
+    package СТО {
+               
+    actor :Менеджер СТО: as manager
+    actor :Сотрудник\nцентрального склада: as sklad
+    actor :Сотрудник\nсклада СТО: as skladsto 
+    actor :Бухгалтерия: as buh
+    
+
+    usecase "Заказать запчасть" as zakaz
+            
+        package Система {            
+
+            usecase "Запросить наличие на\nлокальном складе складе" as zakazlocal
+            
+                    
+        }    
+
+    manager --> zakazlocal 
+    
+    priem <.. check : extend
+    priem ..> naryad : include
+   
+    }
+@enduml
