@@ -57,7 +57,7 @@ skinparam DefaultTextAlignment center
     zakaz ..> reservlocal : include
     zakaz <.. cancelapp : extend 
     zakaz <.. getanalog : extend
-    zakaz <.. zakazlocal : extend
+    zakaz ..> zakazlocal : include
     zakaz ..> app : include
     
     skladsto --> accept
