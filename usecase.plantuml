@@ -13,18 +13,75 @@ skinparam DefaultTextAlignment center
     
 
     usecase "Заказать запчасть" as zakaz
-            
+
+    usecase "Обработать заказ запчастей с СТО" as processorder 
+
+    
+        
         package Система {            
 
-            usecase "Запросить наличие на\nлокальном складе складе" as zakazlocal
+            usecase "Запросить наличие на\nлокальном складе" as zakazlocal
+            usecase "Зарезервировать на\nлокальном складе" as reservlocal
+            usecase "Заказать запчасти\nна центральном складе" as app            
+            usecase "Отменить заявку на\nцентральный склад" as cancelapp
+            usecase "Получить список аналогов запчастей" as getanalog
             
+
+            usecase "Принять запчасть\nна склад СТО" as accept
+            usecase "Выдать запчасть\nсо склада СТО" as issuesto
+
+            
+            usecase "Запросить наличие на\nцентральном складе" as zakazcenter
+            usecase "Зарезервировать на\nцентральном складе" as reservcenter
+            usecase "Запросить наличие\nу поставщика" as zakazdealer
+            usecase "Зарезервировать у поставщика" as reservdealer
+            usecase "Запросить аналоги у поставщика" as getanalogdealer
+            usecase "Отправить список\nаналогов на СТО" as sendanalogdealer
+            usecase "Произвести закупку запчастей у поставщика" as purchase
+            usecase "Произвести отмену покупки" as cancelpurchase
+            usecase "Оприходовать запчасть\nна центральный склад" as issuecenter
+            usecase "Оформить доставку" as senddelivery
+
+            usecase "Получить прогнозируемый\nспрос запчастей" as getforecast
+
+            usecase "Утвердить список\nспроса запчастей" as signforecast
+
+            usecase "Запросить список закупок" as getlistpurchase
+            usecase "Изменить статус\nоплаты закупки" as patchpurchase
+
+
                     
         }    
 
-    manager --> zakazlocal 
+    manager --> zakaz
+    zakaz ..> reservlocal : include
+    zakaz <.. cancelapp : extend 
+    zakaz <.. getanalog : extend
+    zakaz <.. zakazlocal : extend
+    zakaz ..> app : include
     
-    priem <.. check : extend
-    priem ..> naryad : include
+    skladsto --> accept
+    skladsto --> issuesto
+    
+    sklad --> processorder
+    processorder ..> purchase : include
+
+    processorder ..> zakazcenter : include
+    processorder ..> reservcenter : include
+    processorder ..> zakazdealer : include
+    processorder ..> reservdealer : include
+    processorder <.. getanalogdealer : extend
+    processorder <.. sendanalogdealer : extend 
+    processorder ..> issuecenter : include 
+    processorder ..> senddelivery : include
+
+    purchase <.. cancelpurchase : extend 
+
+    sklad --> getforecast
+    getforecast ..> signforecast : include 
+
+    buh --> getlistpurchase
+    buh --> patchpurchase
    
     }
 @enduml
