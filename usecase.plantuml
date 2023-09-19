@@ -12,7 +12,7 @@ skinparam DefaultTextAlignment center
     actor :Бухгалтерия: as buh
     
 
-    usecase "Заказать запчасть" as zakaz
+    usecase "Получить запчасти для ремонта" as zakaz
 
     usecase "Обработать заказ запчастей с СТО" as processorder 
 
