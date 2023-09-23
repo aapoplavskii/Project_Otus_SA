@@ -20,7 +20,6 @@ skinparam DefaultTextAlignment center
         
         package Система {            
 
-            usecase "Запросить наличие на\nлокальном складе" as zakazlocal
             usecase "Зарезервировать на\nлокальном складе" as reservlocal
             usecase "Заказать запчасти\nна центральном складе" as app            
             usecase "Отменить заявку на\nцентральный склад" as cancelapp
@@ -57,7 +56,6 @@ skinparam DefaultTextAlignment center
     zakaz ..> reservlocal : include
     zakaz <.. cancelapp : extend 
     zakaz <.. getanalog : extend
-    zakaz ..> zakazlocal : include
     zakaz ..> app : include
     
     skladsto --> accept
