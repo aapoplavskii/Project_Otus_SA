@@ -30,7 +30,6 @@ skinparam DefaultTextAlignment center
             usecase "Выдать запчасть\nсо склада СТО" as issuesto
 
             
-            usecase "Запросить наличие на\nцентральном складе" as zakazcenter
             usecase "Зарезервировать на\nцентральном складе" as reservcenter
             usecase "Запросить наличие\nу поставщика" as zakazdealer
             usecase "Зарезервировать у поставщика" as reservdealer
@@ -39,7 +38,7 @@ skinparam DefaultTextAlignment center
             usecase "Произвести закупку запчастей у поставщика" as purchase
             usecase "Произвести отмену покупки" as cancelpurchase
             usecase "Оприходовать запчасть\nна центральный склад" as issuecenter
-            usecase "Оформить доставку" as senddelivery
+            usecase "Оформить перемещение" as senddelivery
 
             usecase "Получить прогнозируемый\nспрос запчастей" as getforecast
 
@@ -64,7 +63,6 @@ skinparam DefaultTextAlignment center
     sklad --> processorder
     processorder ..> purchase : include
 
-    processorder ..> zakazcenter : include
     processorder ..> reservcenter : include
     processorder ..> zakazdealer : include
     processorder ..> reservdealer : include
