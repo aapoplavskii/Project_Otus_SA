@@ -10,6 +10,7 @@ skinparam DefaultTextAlignment center
     actor :Сотрудник\nцентрального склада: as sklad
     actor :Сотрудник\nсклада СТО: as skladsto 
     actor :Бухгалтерия: as buh
+    actor :Администратор: as admin
     
 
     usecase "Получить запчасти для ремонта" as zakaz
@@ -37,8 +38,9 @@ skinparam DefaultTextAlignment center
             usecase "Отправить список\nаналогов на СТО" as sendanalogdealer
             usecase "Произвести закупку запчастей у поставщика" as purchase
             usecase "Произвести отмену покупки" as cancelpurchase
-            usecase "Оприходовать запчасть\nна центральный склад" as issuecenter
+            usecase "Принять запчасть\nна центральный склад" as issuecenter
             usecase "Оформить перемещение" as senddelivery
+            usecase "Выдать запчасть с центрального склада" as issuecenter 
 
             usecase "Получить прогнозируемый\nспрос запчастей" as getforecast
 
@@ -47,7 +49,7 @@ skinparam DefaultTextAlignment center
             usecase "Запросить список закупок" as getlistpurchase
             usecase "Изменить статус\nоплаты закупки" as patchpurchase
 
-
+            usecase "Создать пользователя" as adduser
                     
         }    
 
@@ -69,7 +71,7 @@ skinparam DefaultTextAlignment center
     processorder <.. getanalogdealer : extend
     processorder <.. sendanalogdealer : extend 
     processorder ..> issuecenter : include 
-    processorder ..> senddelivery : include
+    issuecenter ..> senddelivery : include
 
     purchase <.. cancelpurchase : extend 
 
@@ -78,6 +80,8 @@ skinparam DefaultTextAlignment center
 
     buh --> getlistpurchase
     buh --> patchpurchase
+
+    admin --> adduser
    
     }
 @enduml
