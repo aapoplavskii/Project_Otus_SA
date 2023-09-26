@@ -1,0 +1,174 @@
+@startuml Domain model
+'left to right direction
+
+class roles {
+    +id : integer 
+    +name : string 
+}
+
+class users {
+    +id : integer 
+    +login : string 
+    +password : string
+    +FIO : string
+    +role_id : integer
+    +employee_id : integer
+    +active : boolean
+}
+
+class employees {
+    +id : integer 
+    +FIO : string
+    +position_id : integer
+    +branch_id : integer 
+}
+
+class positions {
+    +id : integer 
+    +name : string 
+}
+
+class branches {
+    +id : integer 
+    +name : string
+    +legal_address : string
+    +current_address : string 
+}
+
+class parts {
+    +id : integer 
+    +name : string 
+    +article : string
+    +manufacturer_id : integer
+    +dealer_id : integer
+    +price : integer
+}
+
+class manufacturers {
+    +id : integer 
+    +name : string 
+}
+
+class dealers {
+    +id : integer 
+    +name : string 
+}
+
+class warehouse {
+    +id : integer 
+    +name : string
+    +branch_id : integer
+    +address_accounting : boolean 
+}
+
+class address {
+    +id : integer 
+    +area_id : integer
+    +rack_id : integer
+    +cell_id : integer 
+}
+
+class areas {
+    +id : integer 
+    +name : string 
+}
+
+class racks {
+    +id : integer 
+    +name : string 
+}
+
+class cells {
+    +id : integer 
+    +name : string 
+}
+
+class typeDocs {
+    +id : integer 
+    +name : string 
+}
+
+class DocsWarehouses {
+    +id : integer 
+    +employee_id : integer
+    +type_id : integer
+    +doc_date : date 
+    +order_id : integer
+}
+
+class recordsDocsWarehouses {
+    +id : integer 
+    +docs_id : integer
+    +part_id : integer
+    +address_id : integer
+    +warehouse_id : integer
+    +quantity : integer
+}
+
+class orders {
+    +id : integer 
+    +employee_id : integer
+    +order_date : date
+    +warehouse_id : integer 
+}
+
+class recordOrders {
+    +id : integer 
+    +part_id : integer
+    quantity : integer 
+}
+
+class purchases {
+    +id : integer 
+    +employee_id : integer
+    +purchase_date : date
+    +status_id : integer
+}
+
+class statusesPurchase {
+    +id : integer 
+    +name : string 
+}
+
+class recordsPurchase {
+    +id : integer 
+    +purchase_id : integer
+    +part_id : integer
+    +order_id : integer
+    +quantity : integer 
+}
+
+
+employee::id "1..*" -up- order::employee_master_id
+auto::id "1..*" -right- order::auto_id
+
+client::id "1..*" -right- auto::client_id
+model::id "1..*" -down- auto::model_id
+
+position::id "1..*" -right- employee::position_id 
+STO::id "1..*" -right- employee::sto_id
+qualification::id "1..*" -left- employee::qualification_id
+
+employee::id "1..*" -down- requestSupport::employee_id
+employee::id "1..*" -down- recordRepair::employee_id
+employee::id "1..*" -right- requestPart::employee_id
+
+auto::id "1..*" - recordRepair::auto_id
+
+warehouse::id "1..*" -up- requestPart::warehouse_id
+
+order::id "1..*" -right- partOrder::order_id
+
+autopart::id "1..*" -left- partOrder::autopart_id
+
+providerPart::id "1..*" -left- autopart::provider_part_id
+manufacturerPart::id "1..*" -left- autopart::manufacturer_part_id
+
+typeWork::id "1..*" -left- workOrder::typeWork_id
+order::id "1..*" -up- workOrder::order_id
+
+qualification::id "1..*" -up- typeWork::qualification_id
+
+autopart::id "1..*" -down- requestPart::autopart_id
+
+@enduml
