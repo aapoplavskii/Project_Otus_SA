@@ -1,5 +1,5 @@
 @startuml Domain model
-'left to right direction
+left to right direction
 
 class roles {
     +id : integer 
@@ -138,37 +138,94 @@ class recordsPurchase {
     +quantity : integer 
 }
 
+class forecasts {
+    +id : integer
+    +employee_id : integer 
+    +forecast_date : date 
+}
 
-employee::id "1..*" -up- order::employee_master_id
-auto::id "1..*" -right- order::auto_id
+class recordsForecasts {
+    +id : integer 
+    +forecast_id : integer
+    +part_id : integer    
+    +quantity : integer 
+}
 
-client::id "1..*" -right- auto::client_id
-model::id "1..*" -down- auto::model_id
+class docsReserve {
+    +id : integer
+    +employee_id : integer 
+    +reserve_date : date 
+    +cancel : boolean
+}
 
-position::id "1..*" -right- employee::position_id 
-STO::id "1..*" -right- employee::sto_id
-qualification::id "1..*" -left- employee::qualification_id
+class recordsDocsReserve {
+    +id : integer 
+    +reserve_id : integer
+    +part_id : integer  
+    +order_id : integer
+    +warehouse_id : integer 
+    +quantity : integer 
+}
 
-employee::id "1..*" -down- requestSupport::employee_id
-employee::id "1..*" -down- recordRepair::employee_id
-employee::id "1..*" -right- requestPart::employee_id
+class docsTransfer {
+    +id : integer
+    +employee_id : integer 
+    +source_warehouse_id : integer
+    +destination_warehouse_id : integer 
+    +transfer_date : date
+}
 
-auto::id "1..*" - recordRepair::auto_id
+class recordsDocsTransfer {
+    +id : integer 
+    +transfer_id : integer
+    +part_id : integer 
+    +order_id : integer   
+    +quantity : integer 
+}
 
-warehouse::id "1..*" -up- requestPart::warehouse_id
+employees::id "1" -- "1" users::employee_id
+employees::id "1" -- "1..*" DocsWarehouses::employee_id
+employees::id "1" -- "1..*" orders::employee_id
+employees::id "1" -- "1..*" forecasts::employee_id
+employees::id "1" -- "1..*" docsReserve::employee_id
+employees::id "1" -- "1..*" docsTransfer::employee_id
+employees::id "1" -- "1..*" purchases::employee_id
+roles::id "1" -- "1..*" users::role_id 
+positions::id "1" -- "1..*" employees::position_id
+branches::id "1" -- "1..*" employees::branch_id
 
-order::id "1..*" -right- partOrder::order_id
+parts::manufacturer_id "1..*" -- "1" manufacturers::id
+parts::dealer_id "1..*" -- "1" dealers::id
+parts::id "1" -- "1..*" recordsDocsWarehouses::part_id
+parts::id "1" -- "1..*" recordsDocsTransfer::part_id
+parts::id "1" -- "1..*" recordOrders::part_id
+parts::id "1" -- "1..*" recordsPurchase::part_id
+parts::id "1" -- "1..*" recordsDocsReserve::part_id
+parts::id "1" -- "1..*" recordsForecasts::part_id
 
-autopart::id "1..*" -left- partOrder::autopart_id
+branches::id "1" -- "1..*" warehouse::branch_id
+warehouse::id "1" -- "1..*" recordsDocsWarehouses::warehouse_id
+warehouse::id "1" -- "1..*" orders::warehouse_id
+warehouse::id "1" -- "1..*" recordsDocsReserve::warehouse_id
+warehouse::id "1" -- "1..*" docsTransfer::source_warehouse_id
+warehouse::id "1" -- "1..*" docsTransfer::destination_warehouse_id
+address::area_id "1..*" -- "1" areas::id
+address::area_id "1..*" -- "1" racks::rack_id
+address::area_id "1..*" -- "1" cells::cell_id
+address::id "1" -- "0..*" recordsDocsWarehouses::address_id
 
-providerPart::id "1..*" -left- autopart::provider_part_id
-manufacturerPart::id "1..*" -left- autopart::manufacturer_part_id
+typeDocs::id "1" -- "1..*" DocsWarehouses::type_id
+orders::id "1" -- "1..*" DocsWarehouses::order_id
+orders::id "1" -- "1..*" recordOrders::order_id
+orders::id "1" -- "1..*" recordsPurchase::order_id
+orders::id "1" -- "1..*" recordsDocsReserve::order_id
+orders::id "1" -- "1..*" recordsDocsTransfer::order_id
 
-typeWork::id "1..*" -left- workOrder::typeWork_id
-order::id "1..*" -up- workOrder::order_id
+forecasts::id "1" -- "1..*" recordsForecasts::forecast_id
+docsReserve::id "1" -- "1..*" recordsDocsReserve::reserve_id
+docsTransfer::id "1" -- "1..*" recordsDocsTransfer::transfer_id
+purchases::id "1" -- "1..*" recordsPurchase::purchase_id
+purchases::status_id "1..*" -- "1" statusesPurchase::id
 
-qualification::id "1..*" -up- typeWork::qualification_id
-
-autopart::id "1..*" -down- requestPart::autopart_id
 
 @enduml
