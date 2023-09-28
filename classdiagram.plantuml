@@ -114,6 +114,7 @@ class order {
 
 class recordOrder {
     +id : integer 
+    +order_id : integer
     +part_id : integer
     quantity : integer 
 }
