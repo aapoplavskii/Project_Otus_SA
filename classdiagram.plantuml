@@ -1,12 +1,12 @@
 @startuml Domain model
 left to right direction
 
-class roles {
+class role {
     +id : integer 
     +name : string 
 }
 
-class users {
+class user {
     +id : integer 
     +login : string 
     +password : string
@@ -16,26 +16,26 @@ class users {
     +active : boolean
 }
 
-class employees {
+class employee {
     +id : integer 
     +FIO : string
     +position_id : integer
     +branch_id : integer 
 }
 
-class positions {
+class position {
     +id : integer 
     +name : string 
 }
 
-class branches {
+class branche {
     +id : integer 
     +name : string
     +legal_address : string
     +current_address : string 
 }
 
-class parts {
+class part {
     +id : integer 
     +name : string 
     +article : string
@@ -44,12 +44,12 @@ class parts {
     +price : integer
 }
 
-class manufacturers {
+class manufacturer {
     +id : integer 
     +name : string 
 }
 
-class dealers {
+class dealer {
     +id : integer 
     +name : string 
 }
@@ -68,17 +68,17 @@ class address {
     +cell_id : integer 
 }
 
-class areas {
+class area {
     +id : integer 
     +name : string 
 }
 
-class racks {
+class rack {
     +id : integer 
     +name : string 
 }
 
-class cells {
+class cell {
     +id : integer 
     +name : string 
 }
@@ -88,7 +88,7 @@ class typeDocs {
     +name : string 
 }
 
-class DocsWarehouses {
+class docWarehouse {
     +id : integer 
     +employee_id : integer
     +type_id : integer
@@ -96,7 +96,7 @@ class DocsWarehouses {
     +order_id : integer
 }
 
-class recordsDocsWarehouses {
+class recordDocWarehouse {
     +id : integer 
     +docs_id : integer
     +part_id : integer
@@ -105,32 +105,32 @@ class recordsDocsWarehouses {
     +quantity : integer
 }
 
-class orders {
+class order {
     +id : integer 
     +employee_id : integer
     +order_date : date
     +warehouse_id : integer 
 }
 
-class recordOrders {
+class recordOrder {
     +id : integer 
     +part_id : integer
     quantity : integer 
 }
 
-class purchases {
+class purchase {
     +id : integer 
     +employee_id : integer
     +purchase_date : date
     +status_id : integer
 }
 
-class statusesPurchase {
+class statusePurchase {
     +id : integer 
     +name : string 
 }
 
-class recordsPurchase {
+class recordPurchase {
     +id : integer 
     +purchase_id : integer
     +part_id : integer
@@ -138,27 +138,27 @@ class recordsPurchase {
     +quantity : integer 
 }
 
-class forecasts {
+class forecast {
     +id : integer
     +employee_id : integer 
     +forecast_date : date 
 }
 
-class recordsForecasts {
+class recordForecast {
     +id : integer 
     +forecast_id : integer
     +part_id : integer    
     +quantity : integer 
 }
 
-class docsReserve {
+class docReserve {
     +id : integer
     +employee_id : integer 
     +reserve_date : date 
     +cancel : boolean
 }
 
-class recordsDocsReserve {
+class recordDocReserve {
     +id : integer 
     +reserve_id : integer
     +part_id : integer  
@@ -167,7 +167,7 @@ class recordsDocsReserve {
     +quantity : integer 
 }
 
-class docsTransfer {
+class docTransfer {
     +id : integer
     +employee_id : integer 
     +source_warehouse_id : integer
@@ -175,57 +175,57 @@ class docsTransfer {
     +transfer_date : date
 }
 
-class recordsDocsTransfer {
+class recordDocTransfer {
     +id : integer 
     +transfer_id : integer
     +part_id : integer 
     +order_id : integer   
-    +quantity : integer 
+    +quantity : integer
 }
 
-employees::id "1" -- "1" users::employee_id
-employees::id "1" -- "1..*" DocsWarehouses::employee_id
-employees::id "1" -- "1..*" orders::employee_id
-employees::id "1" -- "1..*" forecasts::employee_id
-employees::id "1" -- "1..*" docsReserve::employee_id
-employees::id "1" -- "1..*" docsTransfer::employee_id
-employees::id "1" -- "1..*" purchases::employee_id
-roles::id "1" -- "1..*" users::role_id 
-positions::id "1" -- "1..*" employees::position_id
-branches::id "1" -- "1..*" employees::branch_id
+employee::id "1" -- "1" user::employee_id
+employee::id "1" -- "1..*" docWarehouse::employee_id
+employee::id "1" -- "1..*" order::employee_id
+employee::id "1" -- "1..*" forecast::employee_id
+employee::id "1" -- "1..*" docReserve::employee_id
+employee::id "1" -- "1..*" docTransfer::employee_id
+employee::id "1" -- "1..*" purchase::employee_id
+role::id "1" -- "1..*" user::role_id 
+position::id "1" -- "1..*" employee::position_id
+branche::id "1" -- "1..*" employee::branch_id
 
-parts::manufacturer_id "1..*" -- "1" manufacturers::id
-parts::dealer_id "1..*" -- "1" dealers::id
-parts::id "1" -- "1..*" recordsDocsWarehouses::part_id
-parts::id "1" -- "1..*" recordsDocsTransfer::part_id
-parts::id "1" -- "1..*" recordOrders::part_id
-parts::id "1" -- "1..*" recordsPurchase::part_id
-parts::id "1" -- "1..*" recordsDocsReserve::part_id
-parts::id "1" -- "1..*" recordsForecasts::part_id
+part::manufacturer_id "1..*" -- "1" manufacturer::id
+part::dealer_id "1..*" -- "1" dealer::id
+part::id "1" -- "1..*" recordDocWarehouse::part_id
+part::id "1" -- "1..*" recordDocTransfer::part_id
+part::id "1" -- "1..*" recordOrder::part_id
+part::id "1" -- "1..*" recordPurchase::part_id
+part::id "1" -- "1..*" recordDocReserve::part_id
+part::id "1" -- "1..*" recordForecast::part_id
 
-branches::id "1" -- "1..*" warehouse::branch_id
-warehouse::id "1" -- "1..*" recordsDocsWarehouses::warehouse_id
-warehouse::id "1" -- "1..*" orders::warehouse_id
-warehouse::id "1" -- "1..*" recordsDocsReserve::warehouse_id
-warehouse::id "1" -- "1..*" docsTransfer::source_warehouse_id
-warehouse::id "1" -- "1..*" docsTransfer::destination_warehouse_id
-address::area_id "1..*" -- "1" areas::id
-address::area_id "1..*" -- "1" racks::rack_id
-address::area_id "1..*" -- "1" cells::cell_id
-address::id "1" -- "0..*" recordsDocsWarehouses::address_id
+branche::id "1" -- "1..*" warehouse::branch_id
+warehouse::id "1" -- "1..*" recordDocWarehouse::warehouse_id
+warehouse::id "1" -- "1..*" order::warehouse_id
+warehouse::id "1" -- "1..*" recordDocReserve::warehouse_id
+warehouse::id "1" -- "1..*" docTransfer::source_warehouse_id
+warehouse::id "1" -- "1..*" docTransfer::destination_warehouse_id
+address::area_id "1..*" -- "1" area::id
+address::area_id "1..*" -- "1" rack::rack_id
+address::area_id "1..*" -- "1" cell::cell_id
+address::id "1" -- "0..*" recordDocWarehouse::address_id
 
-typeDocs::id "1" -- "1..*" DocsWarehouses::type_id
-orders::id "1" -- "1..*" DocsWarehouses::order_id
-orders::id "1" -- "1..*" recordOrders::order_id
-orders::id "1" -- "1..*" recordsPurchase::order_id
-orders::id "1" -- "1..*" recordsDocsReserve::order_id
-orders::id "1" -- "1..*" recordsDocsTransfer::order_id
+typeDocs::id "1" -- "1..*" docWarehouse::type_id
+order::id "1" -- "1..*" docWarehouse::order_id
+order::id "1" -- "1..*" recordOrder::order_id
+order::id "1" -- "1..*" recordPurchase::order_id
+order::id "1" -- "1..*" recordDocReserve::order_id
+order::id "1" -- "1..*" recordDocTransfer::order_id
 
-forecasts::id "1" -- "1..*" recordsForecasts::forecast_id
-docsReserve::id "1" -- "1..*" recordsDocsReserve::reserve_id
-docsTransfer::id "1" -- "1..*" recordsDocsTransfer::transfer_id
-purchases::id "1" -- "1..*" recordsPurchase::purchase_id
-purchases::status_id "1..*" -- "1" statusesPurchase::id
+forecast::id "1" -- "1..*" recordForecast::forecast_id
+docReserve::id "1" -- "1..*" recordDocReserve::reserve_id
+docTransfer::id "1" -- "1..*" recordDocTransfer::transfer_id
+purchase::id "1" -- "1..*" recordPurchase::purchase_id
+purchase::status_id "1..*" -- "1" statusePurchase::id
 
 
 @enduml
