@@ -7,7 +7,7 @@ participant Dealer
 
 activate STO
 activate Dealer
-STO -> Dealer : 1. Ввод логина и пароля
+STO -> Dealer : 1. Ввод логина и пароля (POST /auth)
 
 activate Dealer
 
@@ -18,149 +18,48 @@ alt данные валидны
     Dealer --> STO : 1.1 токен 
     deactivate Dealer
 
-    STO -> Dealer : 2. Создание заявки
+    STO -> Dealer : 2. Получить предложения (GET /offers/products/{product_id,...}
     activate Dealer
 
-    alt заявка создана
+    Dealer --> STO : 2.1 Список подобранных запчастей
+    deactivate Dealer
 
-        Dealer -> Dealer : Сохранение параметров
+        loop не все запчасти добавлены в корзину
 
-        Dealer --> STO : 2.1 ОК, код 200
-
-            loop оценка не получена
-
-                Dealer -> Dealer : начало оценки заказа
-                activate Dealer
-
-                STO -> Dealer : 3 получить информацию по заявке
-                Dealer --> STO : 3.1 информация по заявке (оценка)
-
-                    opt оценка получена
-
-                        Dealer -> Dealer : окончание оценки
-                        deactivate Dealer
-                        
-                        Dealer --> STO : 3.2 Стоимость заказа
-                        deactivate Dealer
-
-                    end
-
-                end
-
-                opt заявка не подтверждена
-                    STO -> Dealer : 4 Редактирование заявки
-                    activate Dealer
-                    Dealer -> Dealer : сохранение параметров
-
-                    alt заявка изменена
-                        Dealer --> STO : 4.1 ОК, код 200
-                        else неправильные параметры
-
-                        Dealer --> STO : 4.2 ошибка редактирования, код 400
-
-                        else оплата при получении невозможна
-
-                        Dealer --> STO : 4.3 ошибка редактирования, код 403
-                        
-                        else заявка не найдена
-
-                        Dealer --> STO : 4.4 ошибка редактирования, код 404
-
-                        else конфликт
-
-                        Dealer --> STO : 4.5 ошибка редактирования, код 409
-
-                        else слишком много запросов
-
-                        Dealer --> STO : 4.6 ошибка редактирования, код 429
-                        deactivate Dealer
-
-                    end
-
-                end 
-        
-        STO -> Dealer : 5. Подтверждение заявки
-        activate Dealer
-        Dealer -> Dealer : изменение параметров
-
-            alt заявка подтверждена
-                Dealer --> STO : 5.1 ОК, код 200
-                    loop заявка не отменена
-
-                        Dealer -> Dealer : начало поиска исполнителя
-                        activate Dealer
-
-                        STO -> Dealer : 6 получить информацию по заявке
-                        Dealer --> STO : 6.1 информация по заявке (данные по водителю)
-
-                            opt исполнитель определен
-
-                                Dealer -> Dealer : окончание поиска
-                                deactivate Dealer
-                                
-                                Dealer --> STO : 6.2 информация по исполнителю. заявка в работе
-                                deactivate Dealer
-
-                            end
-                    end
-
-                    opt заявка не доставлена
-                        STO -> Dealer : 7 Отменить заявку
-                        activate Dealer
-                        Dealer -> Dealer : изменение параметров
-
-                        alt заявка отменена
-                            Dealer --> STO : 7.1 ОК, код 200
-                            else некорректный запрос
-
-                            Dealer --> STO : 7.2 ошибка отмены, код 400
-                                                      
-                            else заявка не найдена
-
-                            Dealer --> STO : 7.3 ошибка отмены, код 404
-
-                            else козаявка неактуальна
-
-                            Dealer --> STO : 7.4 ошибка отмены, код 409
-                           
-                            deactivate Dealer
-
-                        end
-
-                    end 
-
-                else заявка не найдена
-
-                Dealer --> STO : 5.2 ошибка подтверждения, код 404
-
-                else заявка не прошла оценку
-
-                Dealer --> STO : 5.3 ошибка подтверждения, код 409
-                            
-                else слишком много заявок за промежуток времени
-
-                Dealer --> STO : 5.4 ошибка подтверждения, код 429              
-
-            end
-
-            
-
-        else неверный запрос
-
-        Dealer --> STO : 2.2 ошибка создания, код 400
-
-        else оплата при получении невозможна
-
-        Dealer --> STO : 2.3 ошибка создания, код 403
-
-        else слишком много заявок за промежуток времени
-
-        Dealer --> STO : 2.4 ошибка создания, код 429
+            STO -> Dealer : 3. Добавить в корзину (POST /carts/offers/{offer_id})
+            activate Dealer
+            Dealer -> Dealer : сохранение в корзине
+            Dealer --> STO : 3.1 товар добавлен, информация о корзине  
+            deactivate Dealer          
 
         end
 
+        loop количество запчастей не установлено
 
-    else данные невалидны
+            STO -> Dealer : 4. Изменить количество товара в корзине PUT /carts/offers/{offer_id}
+            activate Dealer
+            Dealer -> Dealer : изменение количества в корзине
+            Dealer --> STO : 4.1 количество изменено, информация о корзине
+            deactivate Dealer
+
+        end
+
+        opt необходимо удалить товар из корзины
+
+            Dealer -> STO : 5. Удалить товар из корзины (DELETE /carts/offers/{offer_id})
+            activate Dealer
+            Dealer -> Dealer : изменение корзины
+            Dealer --> STO : 5.1 товар удален, информация о корзине 
+            deactivate Dealer
+
+        end
+    STO -> Dealer: 6. Заказать товары из корзины (POST /orders/carts)
+    activate Dealer
+    Dealer -> Dealer : сохранение заказа
+    Dealer --> STO : 6.1 Заказ создан, идентификатор заказа
+    deactivate Dealer
+
+else данные невалидны
     Dealer --> STO : 1.2 ошибка получения токена
     deactivate Dealer
 
