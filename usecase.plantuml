@@ -11,15 +11,12 @@ skinparam DefaultTextAlignment center
     actor :Сотрудник\nсклада СТО: as skladsto 
     actor :Бухгалтерия: as buh
     actor :Администратор: as admin
-    
-
-    usecase "Получить запчасти для ремонта" as zakaz
-
-    usecase "Обработать заказ запчастей с СТО" as processorder 
-
-    
-        
+            
         package Система {            
+
+            usecase "Получить запчасти для ремонта" as zakaz
+
+            usecase "Обработать заказ запчастей с СТО" as processorder 
 
             usecase "Зарезервировать на\nлокальном складе" as reservlocal
             usecase "Заказать запчасти\nна центральном складе" as app            
@@ -65,11 +62,11 @@ skinparam DefaultTextAlignment center
     sklad --> processorder
     processorder ..> purchase : include
 
+    processorder <.. sendanalogdealer : extend 
     processorder ..> reservcenter : include
     processorder ..> zakazdealer : include
     processorder ..> reservdealer : include
-    processorder <.. getanalogdealer : extend
-    processorder <.. sendanalogdealer : extend 
+    processorder <.. getanalogdealer : extend    
     processorder ..> issuecenter : include 
     issuecenter ..> senddelivery : include
 

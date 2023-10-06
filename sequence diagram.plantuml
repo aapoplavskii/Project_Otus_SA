@@ -1,0 +1,170 @@
+@startuml sequence euroavto
+
+skinparam SequenceMessageAlignment center
+
+participant STO
+participant Dealer
+
+activate STO
+activate Dealer
+STO -> Dealer : 1. Ввод логина и пароля
+
+activate Dealer
+
+alt данные валидны
+
+    Dealer -> Dealer : проверка данных
+
+    Dealer --> STO : 1.1 токен 
+    deactivate Dealer
+
+    STO -> Dealer : 2. Создание заявки
+    activate Dealer
+
+    alt заявка создана
+
+        Dealer -> Dealer : Сохранение параметров
+
+        Dealer --> STO : 2.1 ОК, код 200
+
+            loop оценка не получена
+
+                Dealer -> Dealer : начало оценки заказа
+                activate Dealer
+
+                STO -> Dealer : 3 получить информацию по заявке
+                Dealer --> STO : 3.1 информация по заявке (оценка)
+
+                    opt оценка получена
+
+                        Dealer -> Dealer : окончание оценки
+                        deactivate Dealer
+                        
+                        Dealer --> STO : 3.2 Стоимость заказа
+                        deactivate Dealer
+
+                    end
+
+                end
+
+                opt заявка не подтверждена
+                    STO -> Dealer : 4 Редактирование заявки
+                    activate Dealer
+                    Dealer -> Dealer : сохранение параметров
+
+                    alt заявка изменена
+                        Dealer --> STO : 4.1 ОК, код 200
+                        else неправильные параметры
+
+                        Dealer --> STO : 4.2 ошибка редактирования, код 400
+
+                        else оплата при получении невозможна
+
+                        Dealer --> STO : 4.3 ошибка редактирования, код 403
+                        
+                        else заявка не найдена
+
+                        Dealer --> STO : 4.4 ошибка редактирования, код 404
+
+                        else конфликт
+
+                        Dealer --> STO : 4.5 ошибка редактирования, код 409
+
+                        else слишком много запросов
+
+                        Dealer --> STO : 4.6 ошибка редактирования, код 429
+                        deactivate Dealer
+
+                    end
+
+                end 
+        
+        STO -> Dealer : 5. Подтверждение заявки
+        activate Dealer
+        Dealer -> Dealer : изменение параметров
+
+            alt заявка подтверждена
+                Dealer --> STO : 5.1 ОК, код 200
+                    loop заявка не отменена
+
+                        Dealer -> Dealer : начало поиска исполнителя
+                        activate Dealer
+
+                        STO -> Dealer : 6 получить информацию по заявке
+                        Dealer --> STO : 6.1 информация по заявке (данные по водителю)
+
+                            opt исполнитель определен
+
+                                Dealer -> Dealer : окончание поиска
+                                deactivate Dealer
+                                
+                                Dealer --> STO : 6.2 информация по исполнителю. заявка в работе
+                                deactivate Dealer
+
+                            end
+                    end
+
+                    opt заявка не доставлена
+                        STO -> Dealer : 7 Отменить заявку
+                        activate Dealer
+                        Dealer -> Dealer : изменение параметров
+
+                        alt заявка отменена
+                            Dealer --> STO : 7.1 ОК, код 200
+                            else некорректный запрос
+
+                            Dealer --> STO : 7.2 ошибка отмены, код 400
+                                                      
+                            else заявка не найдена
+
+                            Dealer --> STO : 7.3 ошибка отмены, код 404
+
+                            else козаявка неактуальна
+
+                            Dealer --> STO : 7.4 ошибка отмены, код 409
+                           
+                            deactivate Dealer
+
+                        end
+
+                    end 
+
+                else заявка не найдена
+
+                Dealer --> STO : 5.2 ошибка подтверждения, код 404
+
+                else заявка не прошла оценку
+
+                Dealer --> STO : 5.3 ошибка подтверждения, код 409
+                            
+                else слишком много заявок за промежуток времени
+
+                Dealer --> STO : 5.4 ошибка подтверждения, код 429              
+
+            end
+
+            
+
+        else неверный запрос
+
+        Dealer --> STO : 2.2 ошибка создания, код 400
+
+        else оплата при получении невозможна
+
+        Dealer --> STO : 2.3 ошибка создания, код 403
+
+        else слишком много заявок за промежуток времени
+
+        Dealer --> STO : 2.4 ошибка создания, код 429
+
+        end
+
+
+    else данные невалидны
+    Dealer --> STO : 1.2 ошибка получения токена
+    deactivate Dealer
+
+end
+
+
+@enduml
